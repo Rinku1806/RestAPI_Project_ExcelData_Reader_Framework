@@ -1,0 +1,93 @@
+package prjct.nine.utilities;
+
+import java.lang.reflect.Method;
+import java.util.Hashtable;
+
+import org.testng.annotations.DataProvider;
+
+import prjct.nine.base.testingBase;
+
+
+public class DataUtil extends testingBase {
+
+		@DataProvider(name="dp")
+		public static Object[][] getData(Method m) {
+
+			int rows = xlReader.getRowCount(prop.getProperty("testDataSheetName"));
+		//	System.out.println("Total rows are : " + rows);
+
+			String testName = m.getName();
+		//	System.out.println("Test name is : "+testName);
+
+			// Find the test case start row
+
+			int testCaseRowNum = 1;
+
+			for (testCaseRowNum = 1; testCaseRowNum <= rows; testCaseRowNum++) {
+
+				String testCaseName = xlReader.getCellData(prop.getProperty("testDataSheetName"), 0, testCaseRowNum);
+
+				if (testCaseName.equalsIgnoreCase(testName))
+					break;
+
+			}
+
+			//System.out.println("Test case starts from row num: " + testCaseRowNum);
+
+			// Checking total rows in test case
+
+			int dataStartRowNum = testCaseRowNum + 2;
+
+			int testRows = 0;
+			while (!xlReader.getCellData(prop.getProperty("testDataSheetName"), 0, dataStartRowNum + testRows).equals("")) {
+
+				testRows++;
+			}
+
+			//System.out.println("Total rows of data are : " + testRows);
+
+			// Checking total cols in test case
+
+			int colStartColNum = testCaseRowNum + 1;
+			int testCols = 0;
+
+			while (!xlReader.getCellData(prop.getProperty("testDataSheetName"), testCols, colStartColNum).equals("")) {
+
+				testCols++;
+
+			}
+
+		//	System.out.println("Total cols are : " + testCols);
+
+			// Printing data
+
+			Object[][] data = new Object[testRows][1];
+
+			int i = 0;
+			for (int rNum = dataStartRowNum; rNum < (dataStartRowNum + testRows); rNum++) {
+
+				Hashtable<String, String> table = new Hashtable<String, String>();
+
+				for (int cNum = 0; cNum < testCols; cNum++) {
+
+					// System.out.println(excel.getCellData(config.getProperty("testDataSheetName"),
+					// cNum, rNum));
+					String testData = xlReader.getCellData(prop.getProperty("testDataSheetName"), cNum, rNum);
+					String colName = xlReader.getCellData(prop.getProperty("testDataSheetName"), cNum, colStartColNum);
+
+					table.put(colName, testData);
+
+				}
+
+				data[i][0] = table;
+				i++;
+
+			}
+
+			return data;
+		}
+
+		
+		
+
+	}
