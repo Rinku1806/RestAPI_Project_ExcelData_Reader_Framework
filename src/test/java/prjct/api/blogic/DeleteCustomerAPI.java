@@ -25,7 +25,7 @@ public class DeleteCustomerAPI extends testingBase {
 	
 	public static Response DeleteCustomerByID(Hashtable<String, String> data) {
 		ExtentListeners.testReport.get().info("Deleting the Customer with Customer id : " + data.get("Id"));
-		Response response = given().auth().basic(prop.getProperty("prjct_secret_key"), "").delete(prop.getProperty("CreateUserEndPoint")+"/"+data.get("Id"));
+		Response response = given().auth().basic(secretKey, "").delete(prop.getProperty("CreateUserEndPoint")+"/"+data.get("Id"));
 		return response;
 
 
